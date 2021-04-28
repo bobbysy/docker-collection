@@ -24,11 +24,32 @@ docker build . -t nlp-notebook
 ```
 
 ## Run
-From latex project root directory. 
+From project root directory. 
 
 > In Linux
 ```sh
 docker run --rm \
- -it -p 8888:8888 \
+ -p 8888:8888 \
+ -v ${pwd}:/home/jovyan/work \
  nlp-notebook
+```
+
+Instructs the startup script to run `jupyter lab` instead of the default `jupyter notebook` command.
+
+> In Linux
+```sh
+docker run --rm \
+-p 8888:8888 \
+-e JUPYTER_ENABLE_LAB=yes \
+-v "${pwd}":/home/jovyan/work \
+nlp-notebook
+```
+
+> In Windows PowerShell
+```ps
+docker run --rm `
+-p 8888:8888 `
+-e JUPYTER_ENABLE_LAB=yes `
+-v "${pwd}":/home/jovyan/work `
+nlp-notebook
 ```
