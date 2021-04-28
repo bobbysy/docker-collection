@@ -19,16 +19,16 @@ docker run --rm \
 
 > In Windows Command Line (cmd)
 ```cmd
-docker run --rm \
- -v %cd%:/home/workdir \
- debian-latex \
+docker run --rm ^
+ -v %cd%:/home/workdir ^
+ debian-latex ^
  pdflatex sample.tex
 ```
 
 > In Windows PowerShell
 ```ps
-docker run --rm \
- -v ${pwd}:/home/workdir \
- debian-latex \
+docker run --rm `
+ -v ${pwd}:/home/workdir `
+ debian-latex `
  pdflatex sample.tex
 ```
