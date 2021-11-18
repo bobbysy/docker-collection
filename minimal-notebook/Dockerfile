@@ -10,25 +10,6 @@ ARG py_ver=3.8
 
 USER root
 
-SHELL ["/bin/bash", "-c"]
-
-# you can add additional libraries you want mamba to install by listing them below the first line and ending with "&& \"
-RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/${conda_env}" python=${py_ver} ipython ipykernel && \
-    mamba clean --all -f -y
-
-# create Python 3.x environment and link it to jupyter
-RUN "${CONDA_DIR}/envs/${conda_env}/bin/python" -m ipykernel install --user --name="${conda_env}" && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
-
-# prepend conda environment to path
-ENV PATH "${CONDA_DIR}/envs/${conda_env}/bin:${PATH}"
-
-
-FROM minimal as Base
-
-USER root
-
 # ffmpeg for matplotlib anim & dvipng+cm-super for latex labels
 RUN apt-get update --yes && \
     apt-get install --yes --no-install-recommends ffmpeg dvipng cm-super && \
@@ -36,23 +17,25 @@ RUN apt-get update --yes && \
 
 USER ${NB_UID}
 
-# # Install Python 3 packages
-RUN mamba install --quiet --yes \
+# you can add additional libraries you want mamba to install by listing them below the first line and ending with "&& \"
+RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/${conda_env}" python=${py_ver} ipython ipykernel \
     'bokeh' \
     'ipympl' \
     'ipywidgets' \
-    'jupyter-dash' \
     'numba' \
     'pandas' \
     'scikit-image' \
     'scikit-learn' \
     'scipy' \
     'seaborn' && \
+    pip install --quiet --no-cache-dir matplotlib jupyter-dash && \
     ### can modify or enable additional extensions here
     jupyter nbextension enable --py jupyter_dash --user && \
     jupyter lab build && \
-    mamba clean --all -f -y && \
-    pip install --quiet --no-cache-dir matplotlib && \
+    mamba clean --all -f -y
+
+# create Python 3.x environment and link it to jupyter
+RUN "${CONDA_DIR}/envs/${conda_env}/bin/python" -m ipykernel install --user --name="${conda_env}" && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
@@ -61,6 +44,9 @@ ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
 
 RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
     fix-permissions "/home/${NB_USER}"
+
+# prepend conda environment to path
+ENV PATH "${CONDA_DIR}/envs/${conda_env}/bin:${PATH}"
 
 USER ${NB_UID}
 
