@@ -1,4 +1,7 @@
-# Jupyter Notebook Stack Docker
+# Custom Jupyter Notebook Stack Docker
+
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/jupyter/minimal-notebook/hub-1.5.0?style=plastic)
+![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/jupyter/minimal-notebook/hub-1.5.0?style=plastic)
 
 Customise version of [jupyter/minimal-notebook](https://github.com/jupyter/docker-stacks/tree/master/minimal-notebook) for Python 3.8.
 
